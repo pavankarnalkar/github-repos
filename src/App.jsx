@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Dashboard from './components/Dashboard';
-import { themeUtils } from './utils/themeUtils';
-import './App.css';
+import React, { useEffect } from "react";
+import Dashboard from "./components/Dashboard";
+import { themeUtils } from "./utils/themeUtils";
+import "./App.css";
 
 function App() {
   useEffect(() => {

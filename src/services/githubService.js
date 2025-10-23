@@ -1,6 +1,7 @@
 import axios from "axios";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
-const GITHUB_API_BASE = "https://api.github.com";
+const GITHUB_API_BASE = TEXT_CONSTANTS.GITHUB.BASE_URL;
 // Optional GitHub token for higher rate limits (set in .env file)
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -9,7 +10,7 @@ const apiClient = axios.create({
   baseURL: GITHUB_API_BASE,
   timeout: 10000,
   headers: {
-    Accept: "application/vnd.github.v3+json",
+    Accept: TEXT_CONSTANTS.GITHUB.ACCEPT_HEADER,
     ...(GITHUB_TOKEN && { Authorization: `token ${GITHUB_TOKEN}` }),
   },
 });
@@ -19,15 +20,15 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 403) {
-      throw new Error("API rate limit exceeded. Please try again later.");
+      throw new Error(TEXT_CONSTANTS.ERROR_MESSAGES.RATE_LIMIT);
     }
     if (error.response?.status === 404) {
-      throw new Error("No repositories found.");
+      throw new Error(TEXT_CONSTANTS.ERROR_MESSAGES.NOT_FOUND);
     }
     if (error.code === "ECONNABORTED") {
-      throw new Error("Request timeout. Please check your connection.");
+      throw new Error(TEXT_CONSTANTS.ERROR_MESSAGES.TIMEOUT);
     }
-    throw new Error(error.message || "An error occurred while fetching data.");
+    throw new Error(error.message || TEXT_CONSTANTS.ERROR_MESSAGES.GENERIC);
   }
 );
 
@@ -48,15 +49,18 @@ export const githubService = {
     order = "desc"
   ) {
     try {
-      const response = await apiClient.get("/search/repositories", {
-        params: {
-          q: query,
-          page,
-          per_page: perPage,
-          sort,
-          order,
-        },
-      });
+      const response = await apiClient.get(
+        TEXT_CONSTANTS.GITHUB.SEARCH_ENDPOINT,
+        {
+          params: {
+            q: query,
+            page,
+            per_page: perPage,
+            sort,
+            order,
+          },
+        }
+      );
 
       return {
         repositories: response.data.items.map((repo) => ({

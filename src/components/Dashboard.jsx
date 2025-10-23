@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Github, RefreshCw, AlertCircle } from "lucide-react";
 import SearchBar from "./SearchBar";
 import DataTable from "./DataTable";
@@ -7,6 +7,7 @@ import {
   useRepositories,
   useSortingAndFiltering,
 } from "../hooks/useRepositories";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
 const Dashboard = () => {
   const {
@@ -55,7 +56,7 @@ const Dashboard = () => {
             <div className="flex items-center gap-3">
               <Github className="w-8 h-8 text-gray-800 dark:text-gray-200" />
               <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                GitHub Repositories Dashboard
+                {TEXT_CONSTANTS.HEADER.TITLE}
               </h1>
             </div>
             <div className="flex items-center gap-3">
@@ -63,12 +64,12 @@ const Dashboard = () => {
                 onClick={handleRefresh}
                 disabled={loading}
                 className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors disabled:opacity-50"
-                title="Refresh data"
+                title={TEXT_CONSTANTS.HEADER.REFRESH_TITLE}
               >
                 <RefreshCw
                   className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
                 />
-                Refresh
+                {TEXT_CONSTANTS.HEADER.REFRESH_BUTTON}
               </button>
               <ThemeToggle />
             </div>
@@ -88,7 +89,7 @@ const Dashboard = () => {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Total Repositories
+                    {TEXT_CONSTANTS.STATS.TOTAL_REPOSITORIES}
                   </p>
                   <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                     {totalCount.toLocaleString()}
@@ -104,7 +105,7 @@ const Dashboard = () => {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Displayed
+                    {TEXT_CONSTANTS.STATS.DISPLAYED}
                   </p>
                   <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                     {repositories.length}
@@ -120,7 +121,7 @@ const Dashboard = () => {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Languages
+                    {TEXT_CONSTANTS.STATS.LANGUAGES}
                   </p>
                   <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                     {availableLanguages.length}
@@ -159,14 +160,14 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             <p>
-              Data provided by{" "}
+              {TEXT_CONSTANTS.FOOTER.DATA_PROVIDED_BY}{" "}
               <a
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 dark:text-blue-400 hover:underline"
               >
-                GitHub API
+                {TEXT_CONSTANTS.FOOTER.GITHUB_API}
               </a>
             </p>
           </div>

@@ -14,6 +14,7 @@ import {
   getLanguageColor,
 } from "../utils/helpers";
 import { cardStyles, textStyles, layoutStyles } from "../styles/shared";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
 const RepositoryCard = ({ repository }) => {
   const {
@@ -46,7 +47,8 @@ const RepositoryCard = ({ repository }) => {
             </h3>
           </div>
           <p className={`text-sm ${textStyles.secondary} mb-2`}>
-            by <span className="font-medium">{owner.login}</span>
+            {TEXT_CONSTANTS.REPOSITORY.BY}{" "}
+            <span className="font-medium">{owner.login}</span>
           </p>
         </div>
         <a
@@ -56,7 +58,7 @@ const RepositoryCard = ({ repository }) => {
           className={`${layoutStyles.flexStart} gap-1 text-sm ${textStyles.link}`}
         >
           <ExternalLink className="w-4 h-4" />
-          View
+          {TEXT_CONSTANTS.REPOSITORY.VIEW}
         </a>
       </div>
 
@@ -99,7 +101,9 @@ const RepositoryCard = ({ repository }) => {
       {/* Updated Date */}
       <div className={`flex items-center gap-1 text-xs ${textStyles.muted}`}>
         <Calendar className="w-3 h-3" />
-        <span>Updated {formatDate(updatedAt)}</span>
+        <span>
+          {TEXT_CONSTANTS.REPOSITORY.UPDATED} {formatDate(updatedAt)}
+        </span>
       </div>
     </div>
   );
@@ -112,7 +116,7 @@ const DataTable = ({ repositories, loading, error, onLoadMore, hasMore }) => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">
-            Loading repositories...
+            {TEXT_CONSTANTS.DATA_TABLE.LOADING}
           </p>
         </div>
       </div>
@@ -124,7 +128,7 @@ const DataTable = ({ repositories, loading, error, onLoadMore, hasMore }) => {
       <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
-          Error Loading Data
+          {TEXT_CONSTANTS.DATA_TABLE.ERROR_TITLE}
         </h3>
         <p className="text-red-600 dark:text-red-300">{error}</p>
       </div>
@@ -136,10 +140,10 @@ const DataTable = ({ repositories, loading, error, onLoadMore, hasMore }) => {
       <div className="text-center py-12">
         <Github className="w-16 h-16 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          No repositories found
+          {TEXT_CONSTANTS.DATA_TABLE.NO_REPOS_TITLE}
         </h3>
         <p className="text-gray-600 dark:text-gray-400">
-          Try adjusting your search criteria or filters.
+          {TEXT_CONSTANTS.DATA_TABLE.NO_REPOS_MESSAGE}
         </p>
       </div>
     );
@@ -165,10 +169,10 @@ const DataTable = ({ repositories, loading, error, onLoadMore, hasMore }) => {
             {loading ? (
               <div className="flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                Loading...
+                {TEXT_CONSTANTS.DATA_TABLE.LOADING_MORE}
               </div>
             ) : (
-              "Load More"
+              TEXT_CONSTANTS.DATA_TABLE.LOAD_MORE
             )}
           </button>
         </div>

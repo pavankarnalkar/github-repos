@@ -1,8 +1,10 @@
+import { TEXT_CONSTANTS } from "../constants/textConstants";
+
 /**
  * Theme management utilities
  */
 
-const THEME_KEY = "dashboard-theme";
+const THEME_KEY = TEXT_CONSTANTS.STORAGE.THEME_KEY;
 
 export const themeUtils = {
   /**
@@ -17,8 +19,8 @@ export const themeUtils = {
 
     // Check system preference
     return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+      ? TEXT_CONSTANTS.THEME_VALUES.DARK
+      : TEXT_CONSTANTS.THEME_VALUES.LIGHT;
   },
 
   /**
@@ -37,7 +39,10 @@ export const themeUtils = {
    */
   toggleTheme(currentTheme = null) {
     const theme = currentTheme || this.getTheme();
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme =
+      theme === TEXT_CONSTANTS.THEME_VALUES.LIGHT
+        ? TEXT_CONSTANTS.THEME_VALUES.DARK
+        : TEXT_CONSTANTS.THEME_VALUES.LIGHT;
     this.setTheme(newTheme);
     return newTheme;
   },
@@ -60,7 +65,9 @@ export const themeUtils = {
     const handleChange = (e) => {
       // Only update if no theme is saved in localStorage
       if (!localStorage.getItem(THEME_KEY)) {
-        const theme = e.matches ? "dark" : "light";
+        const theme = e.matches
+          ? TEXT_CONSTANTS.THEME_VALUES.DARK
+          : TEXT_CONSTANTS.THEME_VALUES.LIGHT;
         this.setTheme(theme);
         callback(theme);
       }

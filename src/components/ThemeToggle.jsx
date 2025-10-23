@@ -2,6 +2,7 @@ import React from "react";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "../hooks/useTheme";
 import { buttonStyles, textStyles } from "../styles/shared";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme, isDark } = useTheme();
@@ -10,8 +11,16 @@ const ThemeToggle = () => {
     <button
       onClick={toggleTheme}
       className={`${buttonStyles.primary} bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200`}
-      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      aria-label={
+        isDark
+          ? TEXT_CONSTANTS.THEME.SWITCH_TO_LIGHT
+          : TEXT_CONSTANTS.THEME.SWITCH_TO_DARK
+      }
+      title={
+        isDark
+          ? TEXT_CONSTANTS.THEME.SWITCH_TO_LIGHT
+          : TEXT_CONSTANTS.THEME.SWITCH_TO_DARK
+      }
     >
       {isDark ? (
         <Sun className="w-5 h-5 text-yellow-500" />

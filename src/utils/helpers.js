@@ -1,22 +1,33 @@
+import { TEXT_CONSTANTS } from "../constants/textConstants";
+
 /**
  * Format date to a readable string
  * @param {string} dateString - ISO date string
  * @returns {string} Formatted date
  */
 export const formatDate = (dateString) => {
-  if (!dateString) return "N/A";
+  if (!dateString) return TEXT_CONSTANTS.HELPERS.DATE.NA;
 
   const date = new Date(dateString);
   const now = new Date();
   const diffTime = Math.abs(now - date);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
-  if (diffDays < 365) return `${Math.ceil(diffDays / 30)} months ago`;
+  if (diffDays === 1) return TEXT_CONSTANTS.HELPERS.DATE.YESTERDAY;
+  if (diffDays < 7)
+    return `${diffDays} ${TEXT_CONSTANTS.HELPERS.DATE.DAYS_AGO}`;
+  if (diffDays < 30)
+    return `${Math.ceil(diffDays / 7)} ${
+      TEXT_CONSTANTS.HELPERS.DATE.WEEKS_AGO
+    }`;
+  if (diffDays < 365)
+    return `${Math.ceil(diffDays / 30)} ${
+      TEXT_CONSTANTS.HELPERS.DATE.MONTHS_AGO
+    }`;
 
-  return `${Math.ceil(diffDays / 365)} years ago`;
+  return `${Math.ceil(diffDays / 365)} ${
+    TEXT_CONSTANTS.HELPERS.DATE.YEARS_AGO
+  }`;
 };
 
 /**
@@ -25,7 +36,8 @@ export const formatDate = (dateString) => {
  * @returns {string} Formatted number
  */
 export const formatNumber = (num) => {
-  if (num === null || num === undefined) return "0";
+  if (num === null || num === undefined)
+    return TEXT_CONSTANTS.HELPERS.DEFAULT_NUMBER;
   return num.toLocaleString();
 };
 

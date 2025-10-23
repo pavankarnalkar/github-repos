@@ -7,6 +7,7 @@ import {
   buttonStyles,
   textStyles,
 } from "../styles/shared";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
 const SearchBar = ({
   searchTerm,
@@ -28,7 +29,7 @@ const SearchBar = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search repositories..."
+              placeholder={TEXT_CONSTANTS.SEARCH.PLACEHOLDER}
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               className={`w-full pl-10 pr-4 py-2 ${inputStyles} ${textStyles.primary} placeholder-gray-500 dark:placeholder-gray-400`}
@@ -44,11 +45,21 @@ const SearchBar = ({
               onChange={(e) => onSortChange(e.target.value)}
               className={`${selectStyles} px-4 py-2 pr-8`}
             >
-              <option value="stars">Stars</option>
-              <option value="forks">Forks</option>
-              <option value="updatedAt">Updated</option>
-              <option value="createdAt">Created</option>
-              <option value="name">Name</option>
+              <option value="stars">
+                {TEXT_CONSTANTS.SEARCH.SORT_OPTIONS.STARS}
+              </option>
+              <option value="forks">
+                {TEXT_CONSTANTS.SEARCH.SORT_OPTIONS.FORKS}
+              </option>
+              <option value="updatedAt">
+                {TEXT_CONSTANTS.SEARCH.SORT_OPTIONS.UPDATED}
+              </option>
+              <option value="createdAt">
+                {TEXT_CONSTANTS.SEARCH.SORT_OPTIONS.CREATED}
+              </option>
+              <option value="name">
+                {TEXT_CONSTANTS.SEARCH.SORT_OPTIONS.NAME}
+              </option>
             </select>
             <SortAsc className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
           </div>
@@ -59,7 +70,11 @@ const SearchBar = ({
               onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")
             }
             className={buttonStyles.iconButton}
-            title={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
+            title={`Sort ${
+              sortOrder === "asc"
+                ? TEXT_CONSTANTS.SEARCH.SORT_DESCENDING
+                : TEXT_CONSTANTS.SEARCH.SORT_ASCENDING
+            }`}
           >
             {sortOrder === "asc" ? (
               <SortAsc className={`w-5 h-5 ${textStyles.secondary}`} />
@@ -77,7 +92,7 @@ const SearchBar = ({
             onChange={(e) => onFilterChange(e.target.value)}
             className={`${selectStyles} pl-10 pr-8 py-2`}
           >
-            <option value="all">All Languages</option>
+            <option value="all">{TEXT_CONSTANTS.SEARCH.ALL_LANGUAGES}</option>
             {availableLanguages.map((language) => (
               <option key={language} value={language}>
                 {language}

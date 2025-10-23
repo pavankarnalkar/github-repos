@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { githubService } from "../services/githubService";
 import { sortByKey, filterBySearch } from "../utils/helpers";
+import { TEXT_CONSTANTS } from "../constants/textConstants";
 
 /**
  * Custom hook for managing repository data and API calls
@@ -12,12 +13,23 @@ export const useRepositories = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
-  const [currentQuery, setCurrentQuery] = useState("react");
-  const [currentSort, setCurrentSort] = useState("stars");
-  const [currentOrder, setCurrentOrder] = useState("desc");
+  const [currentQuery, setCurrentQuery] = useState(
+    TEXT_CONSTANTS.DEFAULTS.SEARCH_QUERY
+  );
+  const [currentSort, setCurrentSort] = useState(
+    TEXT_CONSTANTS.DEFAULTS.SORT_BY
+  );
+  const [currentOrder, setCurrentOrder] = useState(
+    TEXT_CONSTANTS.DEFAULTS.SORT_ORDER
+  );
 
   const fetchRepositories = useCallback(
-    async (query = "react", sort = "stars", order = "desc", pageNum = 1) => {
+    async (
+      query = TEXT_CONSTANTS.DEFAULTS.SEARCH_QUERY,
+      sort = TEXT_CONSTANTS.DEFAULTS.SORT_BY,
+      order = TEXT_CONSTANTS.DEFAULTS.SORT_ORDER,
+      pageNum = 1
+    ) => {
       setLoading(true);
       setError(null);
 
@@ -100,9 +112,11 @@ export const useRepositories = () => {
  * Custom hook for managing sorting and filtering with debounced search
  */
 export const useSortingAndFiltering = (data = []) => {
-  const [sortBy, setSortBy] = useState("stars");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [filterBy, setFilterBy] = useState("all");
+  const [sortBy, setSortBy] = useState(TEXT_CONSTANTS.DEFAULTS.SORT_BY);
+  const [sortOrder, setSortOrder] = useState(
+    TEXT_CONSTANTS.DEFAULTS.SORT_ORDER
+  );
+  const [filterBy, setFilterBy] = useState(TEXT_CONSTANTS.DEFAULTS.FILTER_BY);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -119,7 +133,7 @@ export const useSortingAndFiltering = (data = []) => {
     let filtered = data;
 
     // Apply language filter
-    if (filterBy !== "all") {
+    if (filterBy !== TEXT_CONSTANTS.DEFAULTS.FILTER_BY) {
       filtered = filtered.filter((item) => item.language === filterBy);
     }
 
