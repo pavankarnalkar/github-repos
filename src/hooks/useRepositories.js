@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { githubService } from '../services/githubService';
+import { useState, useEffect, useCallback } from "react";
+import { githubService } from "../services/githubService";
+import { sortByKey, filterBySearch } from "../utils/helpers";
 
 /**
  * Custom hook for managing repository data and API calls
@@ -11,42 +12,77 @@ export const useRepositories = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
+  const [currentQuery, setCurrentQuery] = useState("react");
+  const [currentSort, setCurrentSort] = useState("stars");
+  const [currentOrder, setCurrentOrder] = useState("desc");
 
-  const fetchRepositories = useCallback(async (query = 'react', sort = 'stars', order = 'desc', pageNum = 1) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const result = await githubService.searchRepositories(query, pageNum, 10, sort, order);
-      
-      if (pageNum === 1) {
-        setRepositories(result.repositories);
-      } else {
-        setRepositories(prev => [...prev, ...result.repositories]);
+  const fetchRepositories = useCallback(
+    async (query = "react", sort = "stars", order = "desc", pageNum = 1) => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        console.log(
+          `Fetching repositories: query="${query}", sort=${sort}, order=${order}, page=${pageNum}`
+        );
+        const result = await githubService.searchRepositories(
+          query,
+          pageNum,
+          10,
+          sort,
+          order
+        );
+        console.log(
+          `API Response: ${result.repositories.length} repositories, total: ${result.totalCount}`
+        );
+
+        if (pageNum === 1) {
+          setRepositories(result.repositories);
+        } else {
+          setRepositories((prev) => [...prev, ...result.repositories]);
+        }
+
+        setTotalCount(result.totalCount);
+        setHasMore(result.hasMore);
+        setPage(pageNum);
+        setCurrentQuery(query);
+        setCurrentSort(sort);
+        setCurrentOrder(order);
+      } catch (err) {
+        console.error("API Error:", err);
+        setError(err.message);
+        setRepositories([]);
+        setTotalCount(0);
+        setHasMore(false);
+      } finally {
+        setLoading(false);
       }
-      
-      setTotalCount(result.totalCount);
-      setHasMore(result.hasMore);
-      setPage(pageNum);
-    } catch (err) {
-      setError(err.message);
-      setRepositories([]);
-      setTotalCount(0);
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
+
+  // Load initial data on mount
+  useEffect(() => {
+    fetchRepositories();
+  }, [fetchRepositories]);
 
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {
-      fetchRepositories('react', 'stars', 'desc', page + 1);
+      fetchRepositories(currentQuery, currentSort, currentOrder, page + 1);
     }
-  }, [loading, hasMore, page, fetchRepositories]);
+  }, [
+    loading,
+    hasMore,
+    page,
+    fetchRepositories,
+    currentQuery,
+    currentSort,
+    currentOrder,
+  ]);
 
   const refresh = useCallback(() => {
-    fetchRepositories('react', 'stars', 'desc', 1);
-  }, [fetchRepositories]);
+    fetchRepositories(currentQuery, currentSort, currentOrder, 1);
+  }, [fetchRepositories, currentQuery, currentSort, currentOrder]);
 
   return {
     repositories,
@@ -61,76 +97,51 @@ export const useRepositories = () => {
 };
 
 /**
- * Custom hook for managing search functionality
+ * Custom hook for managing sorting and filtering with debounced search
  */
-export const useSearch = (initialQuery = '') => {
-  const [query, setQuery] = useState(initialQuery);
-  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
+export const useSortingAndFiltering = (data = []) => {
+  const [sortBy, setSortBy] = useState("stars");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [filterBy, setFilterBy] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
+  // Debounce search term
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedQuery(query);
+      setDebouncedSearchTerm(searchTerm);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [query]);
-
-  return {
-    query,
-    debouncedQuery,
-    setQuery,
-  };
-};
-
-/**
- * Custom hook for managing sorting and filtering
- */
-export const useSortingAndFiltering = (data = []) => {
-  const [sortBy, setSortBy] = useState('stars');
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [filterBy, setFilterBy] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  }, [searchTerm]);
 
   const filteredAndSortedData = useCallback(() => {
     let filtered = data;
 
     // Apply language filter
-    if (filterBy !== 'all') {
-      filtered = filtered.filter(item => item.language === filterBy);
+    if (filterBy !== "all") {
+      filtered = filtered.filter((item) => item.language === filterBy);
     }
 
-    // Apply search filter
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(item => 
-        item.name.toLowerCase().includes(term) ||
-        item.description?.toLowerCase().includes(term) ||
-        item.owner.login.toLowerCase().includes(term)
-      );
+    // Apply search filter using debounced term
+    if (debouncedSearchTerm) {
+      filtered = filterBySearch(filtered, debouncedSearchTerm, [
+        "name",
+        "description",
+        "owner.login",
+      ]);
     }
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aVal = a[sortBy];
-      let bVal = b[sortBy];
-
-      if (typeof aVal === 'string') {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
-
-      if (sortOrder === 'asc') {
-        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-      } else {
-        return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
-      }
-    });
+    // Apply sorting using helper function
+    filtered = sortByKey(filtered, sortBy, sortOrder);
 
     return filtered;
-  }, [data, sortBy, sortOrder, filterBy, searchTerm]);
+  }, [data, sortBy, sortOrder, filterBy, debouncedSearchTerm]);
 
   const availableLanguages = useCallback(() => {
-    const languages = [...new Set(data.map(item => item.language).filter(Boolean))];
+    const languages = [
+      ...new Set(data.map((item) => item.language).filter(Boolean)),
+    ];
     return languages.sort();
   }, [data]);
 
@@ -143,6 +154,7 @@ export const useSortingAndFiltering = (data = []) => {
     setFilterBy,
     searchTerm,
     setSearchTerm,
+    debouncedSearchTerm,
     filteredAndSortedData: filteredAndSortedData(),
     availableLanguages: availableLanguages(),
   };

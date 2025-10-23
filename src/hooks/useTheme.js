@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { themeUtils } from '../utils/themeUtils';
+import { useState, useEffect } from "react";
+import { themeUtils } from "../utils/themeUtils";
 
 /**
  * Custom hook for managing theme state
  */
 export const useTheme = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     // Initialize theme on mount
@@ -22,7 +22,7 @@ export const useTheme = () => {
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = themeUtils.toggleThemeFrom(theme);
+    const newTheme = themeUtils.toggleTheme(theme);
     setTheme(newTheme);
     return newTheme;
   };
@@ -30,6 +30,6 @@ export const useTheme = () => {
   return {
     theme,
     toggleTheme,
-    isDark: theme === 'dark',
+    isDark: theme === "dark",
   };
 };

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Github, RefreshCw, AlertCircle } from 'lucide-react';
-import SearchBar from './SearchBar';
-import DataTable from './DataTable';
-import ThemeToggle from './ThemeToggle';
-import { useRepositories, useSearch, useSortingAndFiltering } from '../hooks/useRepositories';
+import React, { useState, useEffect } from "react";
+import { Github, RefreshCw, AlertCircle } from "lucide-react";
+import SearchBar from "./SearchBar";
+import DataTable from "./DataTable";
+import ThemeToggle from "./ThemeToggle";
+import {
+  useRepositories,
+  useSortingAndFiltering,
+} from "../hooks/useRepositories";
 
 const Dashboard = () => {
   const {
@@ -17,7 +20,6 @@ const Dashboard = () => {
     refresh,
   } = useRepositories();
 
-  const { query, debouncedQuery, setQuery } = useSearch('react');
   const {
     sortBy,
     setSortBy,
@@ -27,16 +29,17 @@ const Dashboard = () => {
     setFilterBy,
     searchTerm,
     setSearchTerm,
+    debouncedSearchTerm,
     filteredAndSortedData,
     availableLanguages,
   } = useSortingAndFiltering(repositories);
 
-  // Fetch repositories when debounced query changes
+  // Fetch repositories when debounced search term changes (only if not empty)
   useEffect(() => {
-    if (debouncedQuery) {
-      fetchRepositories(debouncedQuery, sortBy, sortOrder, 1);
+    if (debouncedSearchTerm.trim()) {
+      fetchRepositories(debouncedSearchTerm, sortBy, sortOrder, 1);
     }
-  }, [debouncedQuery, sortBy, sortOrder, fetchRepositories]);
+  }, [debouncedSearchTerm, sortBy, sortOrder, fetchRepositories]);
 
   // Handle refresh
   const handleRefresh = () => {
@@ -62,7 +65,9 @@ const Dashboard = () => {
                 className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors disabled:opacity-50"
                 title="Refresh data"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
                 Refresh
               </button>
               <ThemeToggle />
@@ -154,7 +159,7 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             <p>
-              Data provided by{' '}
+              Data provided by{" "}
               <a
                 href="https://github.com"
                 target="_blank"

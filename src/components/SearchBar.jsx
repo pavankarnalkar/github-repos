@@ -1,19 +1,26 @@
-import React from 'react';
-import { Search, Filter, SortAsc, SortDesc } from 'lucide-react';
+import React from "react";
+import { Search, Filter, SortAsc, SortDesc } from "lucide-react";
+import {
+  cardStyles,
+  inputStyles,
+  selectStyles,
+  buttonStyles,
+  textStyles,
+} from "../styles/shared";
 
-const SearchBar = ({ 
-  searchTerm, 
-  onSearchChange, 
-  sortBy, 
-  onSortChange, 
-  sortOrder, 
+const SearchBar = ({
+  searchTerm,
+  onSearchChange,
+  sortBy,
+  onSortChange,
+  sortOrder,
   onSortOrderChange,
   filterBy,
   onFilterChange,
-  availableLanguages 
+  availableLanguages,
 }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div className={`${cardStyles} p-4 mb-6`}>
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Search Input */}
         <div className="flex-1">
@@ -24,7 +31,7 @@ const SearchBar = ({
               placeholder="Search repositories..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`w-full pl-10 pr-4 py-2 ${inputStyles} ${textStyles.primary} placeholder-gray-500 dark:placeholder-gray-400`}
             />
           </div>
         </div>
@@ -35,7 +42,7 @@ const SearchBar = ({
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
-              className="appearance-none bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 pr-8 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`${selectStyles} px-4 py-2 pr-8`}
             >
               <option value="stars">Stars</option>
               <option value="forks">Forks</option>
@@ -48,14 +55,16 @@ const SearchBar = ({
 
           {/* Sort Order Toggle */}
           <button
-            onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors duration-200"
-            title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+            onClick={() =>
+              onSortOrderChange(sortOrder === "asc" ? "desc" : "asc")
+            }
+            className={buttonStyles.iconButton}
+            title={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
           >
-            {sortOrder === 'asc' ? (
-              <SortAsc className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            {sortOrder === "asc" ? (
+              <SortAsc className={`w-5 h-5 ${textStyles.secondary}`} />
             ) : (
-              <SortDesc className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              <SortDesc className={`w-5 h-5 ${textStyles.secondary}`} />
             )}
           </button>
         </div>
@@ -66,10 +75,10 @@ const SearchBar = ({
           <select
             value={filterBy}
             onChange={(e) => onFilterChange(e.target.value)}
-            className="appearance-none bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg pl-10 pr-8 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className={`${selectStyles} pl-10 pr-8 py-2`}
           >
             <option value="all">All Languages</option>
-            {availableLanguages.map(language => (
+            {availableLanguages.map((language) => (
               <option key={language} value={language}>
                 {language}
               </option>

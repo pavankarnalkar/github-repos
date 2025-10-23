@@ -2,7 +2,7 @@
  * Theme management utilities
  */
 
-const THEME_KEY = 'dashboard-theme';
+const THEME_KEY = "dashboard-theme";
 
 export const themeUtils = {
   /**
@@ -14,9 +14,11 @@ export const themeUtils = {
     if (savedTheme) {
       return savedTheme;
     }
-    
+
     // Check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   },
 
   /**
@@ -25,27 +27,17 @@ export const themeUtils = {
    */
   setTheme(theme) {
     localStorage.setItem(THEME_KEY, theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.classList.toggle("dark", theme === "dark");
   },
 
   /**
    * Toggle between light and dark theme
+   * @param {string} currentTheme - Optional current theme, will get from storage if not provided
    * @returns {string} New theme
    */
-  toggleTheme() {
-    const currentTheme = this.getTheme();
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    this.setTheme(newTheme);
-    return newTheme;
-  },
-
-  /**
-   * Toggle theme with current theme parameter
-   * @param {string} currentTheme - Current theme
-   * @returns {string} New theme
-   */
-  toggleThemeFrom(currentTheme) {
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  toggleTheme(currentTheme = null) {
+    const theme = currentTheme || this.getTheme();
+    const newTheme = theme === "light" ? "dark" : "light";
     this.setTheme(newTheme);
     return newTheme;
   },
@@ -63,20 +55,20 @@ export const themeUtils = {
    * @param {Function} callback - Callback function to execute on theme change
    */
   watchSystemTheme(callback) {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
     const handleChange = (e) => {
       // Only update if no theme is saved in localStorage
       if (!localStorage.getItem(THEME_KEY)) {
-        const theme = e.matches ? 'dark' : 'light';
+        const theme = e.matches ? "dark" : "light";
         this.setTheme(theme);
         callback(theme);
       }
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    
+    mediaQuery.addEventListener("change", handleChange);
+
     // Return cleanup function
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   },
 };
