@@ -142,8 +142,14 @@ All code has been reviewed, refined, and customized to meet specific requirement
    cp .env.example .env
 
    # Add your GitHub personal access token (optional, but recommended)
-   # Edit .env and add: VITE_GITHUB_TOKEN=your_github_token_here
+   # Edit .env and add: VITE_GITHUB_TOKEN=your_actual_token_here
    ```
+
+   **⚠️ Security Warning:**
+
+   - **Never commit your `.env` file** - it contains sensitive tokens
+   - **Never share your GitHub token** - treat it like a password
+   - **Regenerate tokens if exposed** - immediately revoke and create new ones
 
    **Why add a GitHub token?**
 
@@ -419,7 +425,7 @@ const useRepositories = () => {
 // Scaled: Redux Toolkit + RTK Query
 const repositoriesApi = createApi({
   reducerPath: "repositoriesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  baseQuery: fetchBaseQuery({ baseURL: "/api" }),
   endpoints: (builder) => ({
     getRepositories: builder.query({
       query: (params) => `repositories?${new URLSearchParams(params)}`,
